@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#2b3a24">
+  <title>Лесной магнат</title>
+  <!-- Запуск с главного экрана телефона: на весь экран и со своей иконкой -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" href="assets/icon-192.png">
+  <link rel="apple-touch-icon" href="assets/icon-180.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Магнат">
+  <script type="module" crossorigin src="./assets/index-DxZGnDOf.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-BZvbNBkz.css">
+</head>
+<body>
+  <div id="app">
+    <div id="game"></div>
+
+    <header class="hud">
+      <div class="counter">
+        <svg class="counter__coin" viewBox="0 0 32 32" aria-hidden="true">
+          <circle cx="16" cy="16" r="13" fill="#ffc93c" stroke="#a8710f" stroke-width="3"/>
+          <circle cx="16" cy="16" r="7" fill="none" stroke="#a8710f" stroke-width="2.5"/>
+        </svg>
+        <span id="coins">0</span>
+      </div>
+      <span class="income" id="income" hidden></span>
+      <div class="powers" id="powers"></div>
+      <div class="boss" id="boss" hidden>
+        <div class="boss__name" id="boss-name"></div>
+        <div class="boss__track"><div class="boss__bar" id="boss-bar"></div></div>
+      </div>
+    </header>
+
+    <button class="acorns" id="acorns" type="button" aria-label="Вечные улучшения" hidden>
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3.5 17.5 7" stroke="#4a3020" stroke-width="3" stroke-linecap="round"/><ellipse cx="16" cy="19.5" rx="8.5" ry="10" fill="#e0a645" stroke="#7a4f1f" stroke-width="2.5"/><path d="M5 15c0-5 5-8.5 11-8.5S27 10 27 15z" fill="#7a5236" stroke="#4a3020" stroke-width="2.5" stroke-linejoin="round"/></svg>
+      <span id="acorn-count">0</span>
+      <span class="acorns__badge" aria-hidden="true">!</span>
+      <span class="acorns__nudge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 21 14h-5.5v7h-7v-7H3z" fill="#ffc93c" stroke="#2e241d" stroke-width="2" stroke-linejoin="round"/></svg></span>
+    </button>
+
+    <button class="mute" id="mute" type="button" aria-label="Звук">
+      <svg class="mute__on" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/>
+        <path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <svg class="mute__off" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/>
+        <path d="M16 9l5 6M21 9l-5 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+
+    <div class="stick" id="stick" hidden><div class="stick__knob" id="stick-knob"></div></div>
+    <div id="floaters"></div>
+    <div class="full" id="full" hidden>МАКС</div>
+    <div class="pointer" id="pointer" hidden>
+      <svg viewBox="0 0 44 44" aria-hidden="true"><path d="M40 22 L8 6 L15 22 L8 38 Z" fill="#ffc93c" stroke="#2e241d" stroke-width="3" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="pointer-label" id="pointer-label" hidden></div>
+    <div class="announce" id="announce" hidden></div>
+
+    <!-- Первый запуск: палец ведёт по экрану, пока лесоруб ни разу не сдвинулся -->
+    <div class="swipe" id="swipe" hidden>
+      <div class="swipe__hand">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M19 30V9.5a3.5 3.5 0 0 1 7 0V22l9.5 2.2a4.5 4.5 0 0 1 3.4 5.2L37 40a5 5 0 0 1-4.9 4H23a6 6 0 0 1-4.7-2.3l-7-8.8a3.2 3.2 0 0 1 4.6-4.4z" fill="#fff8ea" stroke="#2e241d" stroke-width="3" stroke-linejoin="round"/></svg>
+      </div>
+      <p class="swipe__text">Веди пальцем</p>
+    </div>
+
+    <div class="loading" id="loading">
+      <p class="loading__text" id="loading-text">Загружаем лес</p>
+      <div class="loading__track"><div class="loading__bar" id="loading-bar"></div></div>
+    </div>
+
+    <!-- Окна поверх игры. Пока любое открыто, игра стоит -->
+    <div class="sheet" id="away" hidden>
+      <div class="sheet__card">
+        <h2 class="sheet__title">С возвращением!</h2>
+        <p class="sheet__text" id="away-text"></p>
+        <div class="sheet__buttons">
+          <button class="sheet__button" id="away-close" type="button">Забрать</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sheet" id="meta" hidden>
+      <div class="sheet__card sheet__card--list">
+        <button class="sheet__close" id="meta-x" type="button" aria-label="Закрыть"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></button>
+        <h2 class="sheet__title">Вечные улучшения</h2>
+        <p class="sheet__text sheet__text--small"><span id="meta-land"></span>. Улучшения остаются на всех землях. Жёлуди дают жуки-великаны, заказы деревни и переезды.</p>
+        <div class="meta-list" id="meta-list"></div>
+        <p class="sheet__text sheet__text--small sheet__text--gifts" id="meta-gifts" hidden></p>
+        <div class="sheet__buttons">
+          <button class="sheet__button sheet__button--ghost" id="meta-close" type="button">Готово</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Подсказка по ходу игры: картинка, заголовок и пара коротких фраз -->
+    <div class="sheet" id="tip" hidden>
+      <div class="sheet__card">
+        <button class="sheet__close" id="tip-x" type="button" aria-label="Закрыть"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></button>
+        <div class="tip-picture" id="tip-picture"></div>
+        <h2 class="sheet__title" id="tip-title"></h2>
+        <p class="sheet__text" id="tip-text"></p>
+        <div class="sheet__buttons">
+          <button class="sheet__button" id="tip-ok" type="button">Понятно</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sheet" id="gift" hidden>
+      <div class="sheet__card">
+        <h2 class="sheet__title">Дар леса</h2>
+        <p class="sheet__text sheet__text--small">Великан повержен. Выбери один дар, он действует до конца этой земли.</p>
+        <div class="gift-list" id="gift-list"></div>
+      </div>
+    </div>
+
+    <div class="sheet" id="travel" hidden>
+      <div class="sheet__card">
+        <h2 class="sheet__title" id="travel-title"></h2>
+        <p class="sheet__text" id="travel-text"></p>
+        <p class="sheet__text sheet__text--strong" id="travel-reward"></p>
+        <div class="sheet__buttons">
+          <button class="sheet__button" id="travel-go" type="button">В путь</button>
+          <button class="sheet__button sheet__button--ghost" id="travel-stay" type="button">Ещё побуду</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,11 @@
+Модели: Kenney (www.kenney.nl)
+- Survival Kit 2.0
+- Nature Kit 2.1
+- Mini Characters 1.0
+- Fantasy Town Kit 2.0 (детали домов деревни, лежат в models/town)
+
+Лицензия: Creative Commons Zero (CC0)
+http://creativecommons.org/publicdomain/zero/1.0/
+Можно использовать в личных, учебных и коммерческих проектах, указывать автора не обязательно.
+
+Шрифт: Rubik, SIL Open Font License 1.1 (https://openfontlicense.org)
